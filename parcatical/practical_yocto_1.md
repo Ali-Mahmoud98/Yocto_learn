@@ -133,6 +133,7 @@ you will see the following tasks many times
 4. `do_configure` used to add configurations before build and compile.
 5. example about `do_compile`:
     ```sh
+    # very simple do compile task
     do_compile() {
         ${CC} ${CFLAGS} ${LDFLAGS} ${S}/code.c -o out_exec 
     }
