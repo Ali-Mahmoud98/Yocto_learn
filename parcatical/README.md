@@ -1,0 +1,1 @@
+# This repo contains a notes for yocto from trying
