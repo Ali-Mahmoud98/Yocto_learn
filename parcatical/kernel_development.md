@@ -18,16 +18,12 @@ In Linux, kernel modules are pieces of code that can be loaded and unloaded into
     * [3.4. `modprobe -r`](#34-modprobe--r)
 * [4. NOTES](#4-notes)
 * [5. Hello World kernel module example](#5-hello-world-kernel-module-example)
-* [6. Character Devive Driver](#6-character-devive-driver)
+* [6. Character Device Driver](#6-character-devive-driver)
     * [6.1. What is the character device driver/module?](#61-what-is-the-character-device-drivermodule)
     * [6.2. What are character device driver operations?](#62-what-are-character-device-driver-operations)
     * [6.3. How to integrate character device driver with yocto build?](#63-how-to-integrate-character-device-driver-with-yocto-build)
+        * [6.3.1. Practical Steps](#631-practical-steps)
     * [6.4. How to load and test char module?](#64-how-to-load-and-test-char-module)
-
-----
-**Section 6.3 will be continued**
-
-----
 
 ### 1. Out-of-Tree Kernel Module
 
@@ -341,10 +337,96 @@ See the following image:
     This photo adapted from <a href="https://www.youtube.com/watch?v=0BaNjmVsXNY&list=PLwqS94HTEwpQmgL1UsSwNk_2tQdzq3eVJ&index=48">this YouTube video</a> at 4:20.
 </p>
 
-##### ---------------
-##### TO BE CONTINUED
-##### ---------------
+##### **6.3.1. Practical Steps**
+-----
+1. source your Environment
+```bash
+source oe-init-build-env
+``` 
+2. open the `menuconfig` and see the suitable place where you can put your character device driver
+```bash
+bitbake -c menuconfig virtual/kernel
+```
+You will see the folder (in `menuconfig`):
 
+Device Drivers -> Character devices
+
+The character devices is the right place to add your character device driver
+
+3. clean shared state
+```bash
+bitbake -c cleansstate virtual/kernel
+```
+4. we make a patch (you can use devtool and devshell or using only devshell), the following is how to do that using devshell
+```bash
+bitbake -c devshell virtual/kernel # this will open shell into the kernel-sources
+git init
+git add *
+git commit -m "Initialization"
+cd drivers; cd char # enter the charater device drivers folder
+mkdir my_ldd
+cd my_ldd
+touch Kconfig
+touch Makefile
+# add your sources in my_ldd directory
+touch my_ldd.c
+vim my_ldd.c # write your code
+```
+5. open your `Kconfig` file
+```bash
+vim Kconfig # the Kconfig file allows the menuconfig to show the configurations 
+```
+input example to the file:
+```
+config MY_LDD
+    tristate "MY_LDD Module" # you can add bool(so it can be y(yes), or n(no)) or tristate(so it can be y(yes), n(no), or m(module)) 
+    help
+        My first Linux Device Driver Module
+```
+6. open your `Makefile`:
+```Makefile
+obj-$(CONFIG_MY_LDD) := my_ldd.o # The configuration name should be like Kconfig: config MY_LDD
+# the driver source code file name is my_ldd.c so the value should my_ldd.o
+```
+7. configure the `Kconfig` file in parent directory(`char/Kconfig`)
+```bash
+cd ..
+vim Kconfig
+```
+inside the `Kconfig` you should your driver source. add this line:
+```Kconfig
+source "drivers/char/my_ldd/Kconfig"
+```
+8. we need to make file entry in the `Makefile` in the parent directory(`char/Makefile`)
+```bash
+vim Makefile
+```
+add this line to the `Makefile`:
+```Makefile
+obj-$(CONFIG_MY_LDD) += my_ldd/
+```
+9. make your patch files
+```bash
+# first you need to go back to the kernel-sources folder
+# then do the following
+git status
+# then git add your files (Kconfig, Makefile) in the drivers/char/
+git add drivers/char/Kconfig
+git add drivers/char/Makefile
+# after that add your driver folder
+git add driver/char/my_ldd/
+git status
+git commit -m "my_ldd charater device driver module"
+git format-patch Head~1 # then the patch is created
+# after that copy the patch file to your custom layer inside recipes-kernel/linux/files
+```
+10. check your driver:
+```bash
+bitbake -c cleansstate virtual/kernel
+bitbake -c menuconfig virtual/kernel # to see your driver
+```
+
+**NOTE:** is better to use `devtool` to do that
 
 #### 6.4. How to load and test char module?
 Once the Yocto build is complete, and the image with the character device driver is running on your target hardware (e.g., Raspberry Pi or other embedded system), you can manually load and test the character driver.
