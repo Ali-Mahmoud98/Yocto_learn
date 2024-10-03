@@ -155,8 +155,13 @@ bitbake-layers show-layers # shows the layers
 bitbake-layers create-layer /path/to/create/layer/layer_name
 
 bitbake-layers add-layer /path/to/create/layer/layer_name
-```
 
+bitbake-layers show-layers | grep -A 1 tar.*: # this is used to find a recipe for tar if you want to find a recipe for python use python.*:
+
+# you can use the following to search for recipes which are in a layer not added to bblayer.conf
+# inside the poky folder
+find . -iname "*.bb" | grep -A 1 my-img* # or if you want to search for plymouth: plymouth*
+```
 
 ### 4. Patching recipe using devtools:
 ----
@@ -187,7 +192,6 @@ devtool reset <recipe-name>
 
 # then delete the recipe files from the workspace
 ```
-
 
 ### 5. Patching sources of recipe without devtools:
 ----
