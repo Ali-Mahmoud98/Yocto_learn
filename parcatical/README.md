@@ -9,6 +9,7 @@
 ### [8. kernel configuration part 1](kernel_configuration_1.md)
 ### [9. kernel configuration part 2](kernel_configuration_2.md)
 ### [10. kernel development](kernel_development.md)
+### [11. Class and `.bbclass` file](yocto_classes_bbclass.md)
 
 ## visit: 
 ### [github repo1](https://github.com/Munawar-git/YoctoTutorials/tree/master)
