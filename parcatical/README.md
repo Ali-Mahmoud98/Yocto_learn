@@ -10,6 +10,7 @@
 ### [9. kernel configuration part 2](kernel_configuration_2.md)
 ### [10. kernel development](kernel_development.md)
 ### [11. Class and `.bbclass` file](yocto_classes_bbclass.md)
+### [12. Yocto devtool](yocto_devtool.md)
 
 ## visit: 
 ### [github repo1](https://github.com/Munawar-git/YoctoTutorials/tree/master)
@@ -19,3 +20,9 @@ it is a good playlist to learn yocto.
 * [repo](https://github.com/TheYoctoJester/TheYoctoJester.github.io)
 * [This_is](https://github.com/TheYoctoJester/this_is)
 * [libanswer](https://github.com/TheYoctoJester/libanswer)
+
+<br>
+<br>
+
+It is good to see the following video if you want to make a python pip package:
+* [Create Python3 Package Recipes | Pip2bitbake](https://www.youtube.com/watch?v=6tynxKrQ7eg&list=PLwqS94HTEwpQmgL1UsSwNk_2tQdzq3eVJ&index=65)  
